@@ -5,7 +5,9 @@ FROM apache/airflow:2.2.3
 ENV AIRFLOW_HOME=/opt/airflow
 
 USER root
-RUN apt-get update -qq && apt-get install vim -qqq
+RUN apt-get update -qq && apt-get install vim -qqq 
+RUN apt-get -y install wget
+RUN apt-get install gzip
 # git gcc g++ -qqq
 
 # switch to airflow user to use pip
