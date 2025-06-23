@@ -1,0 +1,6 @@
+Preparations:
+- updated terraform to make the homework bucket
+- downloaded indicated data files using airflow
+- created homework bq external tables
+- created homework bg regular tables
+

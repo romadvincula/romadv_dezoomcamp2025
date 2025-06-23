@@ -1,0 +1,6 @@
+- Week 4 Main page:
+https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/04-analytics-engineering
+
+- dbt with BigQuery on Docker page:
+https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/04-analytics-engineering/docker_setup/README.md
+

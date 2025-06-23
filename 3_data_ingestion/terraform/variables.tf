@@ -77,3 +77,8 @@ variable "FHV_GCS_OBJECTS" {
     "gs://dtc_data_lake_dtc-de-course-462612/landing/fhv_2019-*.parquet"
   ]
 }
+
+variable "homework_bucket_name" {
+  description = "Bucket for Week 3 Homework"
+  default     = "dezoomcamp_hw3_2025_dtc-de-course-462612"
+}
