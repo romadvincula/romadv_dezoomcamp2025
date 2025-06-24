@@ -11,6 +11,10 @@ module "week2_main" {
   GREEN_GCS_OBJECTS          = var.GREEN_GCS_OBJECTS
 }
 
+module "week3_homework" {
+  source = "./week3_homework"
+}
+
 module "week4_prep" {
   source = "./week4_prep"
 

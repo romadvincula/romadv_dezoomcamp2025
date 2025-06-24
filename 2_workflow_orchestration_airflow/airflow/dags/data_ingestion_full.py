@@ -103,17 +103,17 @@ with DAG(
 
     cleanup_download_yellow_task = BashOperator(
         task_id="cleanup_download_yellow_task",
-        bash_command=f"rm {{ ti.xcom_pull(task_ids='download_yellow_task') }}"
+        bash_command="rm {{ ti.xcom_pull(task_ids='download_yellow_task') }}"
     )
 
     cleanup_download_green_task = BashOperator(
         task_id="cleanup_download_green_task",
-        bash_command=f"rm {{ ti.xcom_pull(task_ids='download_green_task') }}"
+        bash_command="rm {{ ti.xcom_pull(task_ids='download_green_task') }}"
     )
 
     cleanup_download_fhv_task = BashOperator(
         task_id="cleanup_download_fhv_task",
-        bash_command=f"rm {{ ti.xcom_pull(task_ids='download_fhv_task') }}"
+        bash_command="rm {{ ti.xcom_pull(task_ids='download_fhv_task') }}"
     )
 
     # print_xcom = BashOperator(
