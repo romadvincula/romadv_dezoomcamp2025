@@ -36,7 +36,7 @@ with DAG(
     dag_id="data_ingestion_full",
     schedule_interval="0 6 2 * *",
     start_date=datetime(2019, 1, 1),
-    end_date=datetime(2021, 1, 1),
+    end_date=datetime(2021, 8, 1),
     default_args=default_args,
     max_active_runs=4,
     tags=['dtc-de'],
@@ -101,6 +101,21 @@ with DAG(
         provide_context=True,
     )
 
+    cleanup_download_yellow_task = BashOperator(
+        task_id="cleanup_download_yellow_task",
+        bash_command=f"rm {{ ti.xcom_pull(task_ids='download_yellow_task') }}"
+    )
+
+    cleanup_download_green_task = BashOperator(
+        task_id="cleanup_download_green_task",
+        bash_command=f"rm {{ ti.xcom_pull(task_ids='download_green_task') }}"
+    )
+
+    cleanup_download_fhv_task = BashOperator(
+        task_id="cleanup_download_fhv_task",
+        bash_command=f"rm {{ ti.xcom_pull(task_ids='download_fhv_task') }}"
+    )
+
     # print_xcom = BashOperator(
     #     task_id='print_xcom',
     #     bash_command="echo {{ ti.xcom_pull(task_ids='upload_yellow_to_gcs_task', key='object_url') }}"
@@ -110,6 +125,7 @@ with DAG(
         start_task, 
         [download_yellow_task, download_green_task, download_fhv_task], 
         [upload_yellow_to_gcs_task, upload_green_to_gcs_task, upload_fhv_to_gcs_task], 
+        [cleanup_download_yellow_task, cleanup_download_green_task, cleanup_download_fhv_task],
         end_task
         )
 

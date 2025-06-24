@@ -26,9 +26,11 @@ resource "google_bigquery_dataset" "nyctaxi_dataset" {
   location   = var.location
 }
 
+# set up external tables, must be run after extracting data to GCS
 resource "google_bigquery_table" "yellow_external_table" {
   dataset_id = google_bigquery_dataset.nyctaxi_dataset.dataset_id
   table_id   = var.YELLOW_EXTERNAL_TABLE_NAME
+  deletion_protection = false
 
   external_data_configuration {
     autodetect    = true
@@ -41,6 +43,7 @@ resource "google_bigquery_table" "yellow_external_table" {
 resource "google_bigquery_table" "green_external_table" {
   dataset_id = google_bigquery_dataset.nyctaxi_dataset.dataset_id
   table_id   = var.GREEN_EXTERNAL_TABLE_NAME
+  deletion_protection = false
 
   external_data_configuration {
     autodetect    = true

@@ -53,3 +53,8 @@ webserver_config.py
 # VSCode
 .vscode
 *.code-workspace
+
+__pycache__
+
+*.csv
+*.parquet
