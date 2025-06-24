@@ -1,0 +1,60 @@
+-------------- DOCKER
+
+- build docker image using compose
+
+docker-compose build
+
+- build docker image for legacy versions
+
+docker build . \
+  --pull \
+  --build-arg BASE_AIRFLOW_IMAGE="apache/airflow:2.0.2" \
+  --tag my-airflow-image:0.0.1
+
+- after build, run initialization of airflow scheduler, db, and other config
+
+docker-compose up airflow-init
+
+- after successful init, run the service
+
+docker-compose up
+
+- check running compose services
+
+docker-compose ps
+
+- stop services
+
+docker-compose down
+
+- Or use this to stop and delete containers, delete volumes with database data, and download images, run:
+
+docker-compose down --volumes --rmi all
+
+- or
+
+docker-compose down --volumes --remove-orphans
+
+- go inside a container at the bash entry point
+
+docker exec -it <container-ID> bash
+
+- list available networks in docker
+
+docker network ls
+
+----------------- AIRFLOW JINJA2 variables:
+
+- date of execution in YYYY-MM-DD format
+{{ ds }}
+
+- same but with timestamp
+{{ execution_date }}
+
+- execution_date can be string formated but not ds, ex.
+{{ execution_date.strftime(\'%Y-%m\') }}
+
+---------------- TERRAFORM
+
+- target a specific module, can be used for plan or apply
+terraform plan -target=module.week2_main

@@ -45,7 +45,8 @@ variable "YELLOW_GCS_OBJECTS" {
   type        = list(string)
   default = [
     "gs://dtc_data_lake_dtc-de-course-462612/landing/yellow_2019-*.parquet",
-    "gs://dtc_data_lake_dtc-de-course-462612/landing/yellow_2020-*.parquet"
+    "gs://dtc_data_lake_dtc-de-course-462612/landing/yellow_2020-*.parquet",
+    "gs://dtc_data_lake_dtc-de-course-462612/landing/yellow_2021-*.parquet",
   ]
 }
 
@@ -60,7 +61,8 @@ variable "GREEN_GCS_OBJECTS" {
   type        = list(string)
   default = [
     "gs://dtc_data_lake_dtc-de-course-462612/landing/green_2019-*.parquet",
-    "gs://dtc_data_lake_dtc-de-course-462612/landing/green_2020-*.parquet"
+    "gs://dtc_data_lake_dtc-de-course-462612/landing/green_2020-*.parquet",
+    "gs://dtc_data_lake_dtc-de-course-462612/landing/green_2021-*.parquet"
   ]
 }
 
@@ -76,9 +78,4 @@ variable "FHV_GCS_OBJECTS" {
   default = [
     "gs://dtc_data_lake_dtc-de-course-462612/landing/fhv_2019-*.parquet"
   ]
-}
-
-variable "homework_bucket_name" {
-  description = "Bucket for Week 3 Homework"
-  default     = "dezoomcamp_hw3_2025_dtc-de-course-462612"
 }

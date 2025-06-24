@@ -1,0 +1,33 @@
+1. 
+- Download and unzip yellow_tripdata_2020-12.csv
+
+Answer: 134.5 MB
+
+2. 
+
+Answer: green_tripdata_2020-04.csv
+
+3. 
+- Query: 
+SELECT COUNT(*)/1000000 FROM `trips_data_all.external_yellow_nytaxi` 
+WHERE DATE(tpep_pickup_datetime) BETWEEN '2020-01-01' AND '2021-01-01';
+
+Answer: 24,648,499
+
+4.
+- Query:
+SELECT COUNT(*)/1000000 FROM `trips_data_all.external_green_nytaxi` 
+WHERE DATE(lpep_pickup_datetime) BETWEEN '2020-01-01' AND '2021-01-01';
+
+Answer: 1,734,051
+
+5.
+- Query:
+SELECT COUNT(*)/1000000 FROM `trips_data_all.external_yellow_nytaxi` 
+WHERE DATE(tpep_pickup_datetime) BETWEEN '2021-03-01' AND '2021-04-01';
+
+Answer: 1,925,152
+
+6.
+
+Answer: Add a timezone property set to America/New_York in the Schedule trigger configuration
