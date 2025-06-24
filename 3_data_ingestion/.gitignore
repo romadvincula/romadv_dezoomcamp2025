@@ -43,8 +43,6 @@ testing/
 
 airflow_v3/
 
-notes.txt
-
 # Airflow stuff
 logs/
 airflow.db
