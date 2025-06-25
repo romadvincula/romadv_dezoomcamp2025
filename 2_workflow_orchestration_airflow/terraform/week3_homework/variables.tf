@@ -12,3 +12,9 @@ variable "gcs_storage_class" {
   description = "Bucket Storage Class"
   default     = "STANDARD"
 }
+
+variable "BQ_DATASET" {
+  description = "BigQuery Dataset that raw data (from GCS) will be written to"
+  type        = string
+  default     = "trips_data_all"
+}

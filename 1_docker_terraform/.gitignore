@@ -39,6 +39,8 @@ terraform.rc
 # Ignore terragrunt cache
 .terragrunt-cache
 
+.ipynb_checkpoints/
+
 testing/
 
 *.json

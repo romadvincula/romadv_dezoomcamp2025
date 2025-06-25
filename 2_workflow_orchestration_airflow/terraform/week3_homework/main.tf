@@ -19,3 +19,23 @@ resource "google_storage_bucket" "week3-homework-bucket" {
     }
   }
 }
+
+data "google_bigquery_dataset" "nyctaxi_dataset" {
+  dataset_id = var.BQ_DATASET
+}
+
+# create external table in BigQuery
+resource "google_bigquery_table" "homework3_external_table" {
+  dataset_id = data.google_bigquery_dataset.nyctaxi_dataset.dataset_id
+  table_id   = "homework3_external_table"
+  deletion_protection = false
+
+  external_data_configuration {
+    autodetect    = true
+    source_format = "PARQUET"
+
+    source_uris = [
+      "gs://${google_storage_bucket.week3-homework-bucket.name}/landing/yellow_2024-*.parquet"
+    ]
+  }
+}
