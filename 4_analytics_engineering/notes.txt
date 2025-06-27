@@ -1,6 +1,55 @@
 - Week 4 Main page:
 https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/04-analytics-engineering
 
+
+- dbt Cloud setup:
+https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/04-analytics-engineering/dbt_cloud_setup.md
+
 - dbt with BigQuery on Docker page:
 https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/04-analytics-engineering/docker_setup/README.md
 
+
+---------------------- dbt
+
+- build upstream and downstream models along with facts_trips model with is_test_run variable set to false (full data)
+dbt build --select +facts_tripdata+ --vars '{'is_test_run': 'false'}'
+
+note: if selected model does not exists (typo), dbt will return successful even if the build wasn't run.
+
+
+- To resolve error with Object Permissions for the GCS Data source bucket, add Storage Object Viewer role to the dbt-service-account
+
+
+- Generate Models YAML using codegen dependency: Usage, copy the code to a new file then compile and get the results
+{% set models_to_generate = codegen.get_models(directory='staging', prefix='stg') %}
+{{
+    codegen.generate_model_yaml(
+        model_names=models_to_generate
+    )
+}}
+
+- Create project documentation, run command below then click on documents icon on the right of the project name
+
+dbt docs generate
+
+
+------------------  Bigquery Queries
+
+-- SELECT COUNT(ehail_fee) FROM `dbt_cad.stg_green_tripdata`;
+
+
+SELECT COUNT(tripid)/1000000 FROM `dbt_cad.facts_tripdata`;
+
+
+SELECT * FROM `dbt_cad.dm_monthly_zone_revenue` 
+ORDER BY revenue_month DESC, revenue_zone, service_type
+LIMIT 100;
+
+
+SELECT payment_type, COUNT(*)
+FROM `dbt_cad.stg_green_tripdata`
+GROUP BY payment_type
+
+SELECT payment_type, COUNT(*)
+FROM `trips_data_all.external_green_nytaxi`
+GROUP BY payment_type
