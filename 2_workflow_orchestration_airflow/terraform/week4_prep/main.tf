@@ -58,9 +58,108 @@ resource "google_bigquery_table" "hw4_yellow_external_table" {
   dataset_id = google_bigquery_dataset.homework4_dataset.dataset_id
   table_id   = "external_yellow_nytaxi"
   deletion_protection = false
+  schema = <<EOF
+[
+  {
+    "name": "VendorID",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tpep_pickup_datetime",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tpep_dropoff_datetime",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "passenger_count",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "trip_distance",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "RatecodeID",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "store_and_fwd_flag",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "PULocationID",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "DOLocationID",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "payment_type",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "fare_amount",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "extra",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "mta_tax",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tip_amount",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tolls_amount",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "improvement_surcharge",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "total_amount",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "congestion_surcharge",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "airport_fee",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  }
+]
+EOF
 
   external_data_configuration {
-    autodetect    = true
+    autodetect    = false
     source_format = "PARQUET"
 
     source_uris = ["gs://homework4-data-lake-dtc-de-course-462612/yellow/yellow_tripdata_*.parquet"]
@@ -71,9 +170,113 @@ resource "google_bigquery_table" "hw4_green_external_table" {
   dataset_id = google_bigquery_dataset.homework4_dataset.dataset_id
   table_id   = "external_green_nytaxi"
   deletion_protection = false
+  schema = <<EOF
+[
+  {
+    "name": "VendorID",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "lpep_pickup_datetime",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "lpep_dropoff_datetime",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "store_and_fwd_flag",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "RatecodeID",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "PULocationID",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "DOLocationID",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "passenger_count",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "trip_distance",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "fare_amount",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "extra",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "mta_tax",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tip_amount",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tolls_amount",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "ehail_fee",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "improvement_surcharge",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "total_amount",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "payment_type",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "trip_type",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "congestion_surcharge",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  }
+]
+EOF
 
   external_data_configuration {
-    autodetect    = true
+    autodetect    = false
     source_format = "PARQUET"
 
     source_uris = ["gs://homework4-data-lake-dtc-de-course-462612/green/green_tripdata_*.parquet"]
