@@ -15,6 +15,7 @@ variable "FHV_GCS_OBJECTS" {
   description = "List of objects in GCS containing the for-hire-vehicles (FHV) NY Taxi data"
   type        = list(string)
   default = [
-    "gs://dtc_data_lake_dtc-de-course-462612/landing/fhv_2019-*.parquet"
+    # "gs://dtc_data_lake_dtc-de-course-462612/landing/fhv_2019-*.parquet"
+    "gs://homework4-data-lake-dtc-de-course-462612/fhv/fhv_tripdata_2019*parquet"
   ]
 }

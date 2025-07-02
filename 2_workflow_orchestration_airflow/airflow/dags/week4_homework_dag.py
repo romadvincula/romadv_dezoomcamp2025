@@ -9,16 +9,17 @@ from datetime import datetime
 
 default_args = {
     "owner": "airflow",
-    "retries": 1,
+    "retries": 0,
 }
+YEAR_MONTH = '{{ execution_date.strftime(\'%Y-%m\') }}'
 
 with DAG(
     dag_id="week4_homework_dag",
     schedule_interval="0 6 2 * *",
-    start_date=datetime(2025, 6, 1),
+    start_date=datetime(2019, 1, 1),
+    end_date=datetime(2020, 1, 1),
     default_args=default_args,
-    catchup=False,
-    max_active_runs=2,
+    max_active_runs=1,
     tags=['dtc-de', 'week4-homework']
 ) as dag:
     """
@@ -32,45 +33,27 @@ with DAG(
         task_id="end_task",
     )
 
-    web_to_gcs_green_2019_task = PythonOperator(
-        task_id='web_to_gcs_green_2019_task',
-        python_callable=web_to_gcs,
-        op_kwargs={'year': '2019', 'service': 'green'}
-    )
-
-    web_to_gcs_green_2020_task = PythonOperator(
-        task_id='web_to_gcs_green_2020_task',
-        python_callable=web_to_gcs,
-        op_kwargs={'year': '2020', 'service': 'green'}
-    )
-
-    # web_to_gcs_yellow_2019_task = PythonOperator(
-    #     task_id='web_to_gcs_yellow_2019_task',
+    # web_to_gcs_green_task = PythonOperator(
+    #     task_id='web_to_gcs_green_task',
     #     python_callable=web_to_gcs,
-    #     op_kwargs={'year': '2019', 'service': 'yellow'}
+    #     op_kwargs={'year_month': YEAR_MONTH, 'service': 'green'}
     # )
 
-    # web_to_gcs_yellow_2020_task = PythonOperator(
-    #     task_id='web_to_gcs_yellow_2020_task',
+    # web_to_gcs_yellow_task = PythonOperator(
+    #     task_id='web_to_gcs_yellow_task',
     #     python_callable=web_to_gcs,
-    #     op_kwargs={'year': '2020', 'service': 'yellow'}
+    #     op_kwargs={'year_month': YEAR_MONTH, 'service': 'yellow'}
     # )
 
-    web_to_gcs_fhv_2019_task = PythonOperator(
-        task_id='web_to_gcs_fhv_2019_task',
+    web_to_gcs_fhv_task = PythonOperator(
+        task_id='web_to_gcs_fhv_task',
         python_callable=web_to_gcs,
-        op_kwargs={'year': '2019', 'service': 'fhv'}
+        op_kwargs={'year_month': YEAR_MONTH, 'service': 'fhv'}
     )
 
-    # start_task >> web_to_gcs_yellow_2019_task >> web_to_gcs_yellow_2020_task
-    start_task >> web_to_gcs_green_2019_task >> web_to_gcs_green_2020_task
-    web_to_gcs_green_2020_task >> web_to_gcs_fhv_2019_task >> end_task
+    start_task >> web_to_gcs_fhv_task >> end_task
+    # start_task >> [web_to_gcs_yellow_task, web_to_gcs_green_task] >> end_task
 
-    # start_task >> web_to_gcs_yellow_2019_task >> web_to_gcs_yellow_2020_task
-    # start_task >> web_to_gcs_green_2019_task >> web_to_gcs_green_2020_task
-    # web_to_gcs_yellow_2020_task >> web_to_gcs_fhv_2019_task
-    # web_to_gcs_green_2020_task >> web_to_gcs_fhv_2019_task
-    # web_to_gcs_fhv_2019_task >> end_task
     
 # @dag(
 #     description="Load data for week 4 homework",
