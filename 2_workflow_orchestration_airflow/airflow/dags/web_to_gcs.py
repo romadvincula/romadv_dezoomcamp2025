@@ -32,31 +32,51 @@ def upload_to_gcs(bucket, object_name, local_file):
     blob.upload_from_filename(local_file)
 
 
-def web_to_gcs(year, service):
-    for i in range(12):
+def transform_fhv(df):
+    df.PUlocationID = df.PUlocationID.fillna(0).astype(int)
+    df.DOlocationID = df.DOlocationID.fillna(0).astype(int)
+    df.pickup_datetime = pd.to_datetime(df.pickup_datetime)
+    df.dropOff_datetime = pd.to_datetime(df.dropOff_datetime)
+
+    return df
+
+
+def web_to_gcs(year_month, service):
+    # for i in range(12):
         
-        # sets the month part of the file_name string
-        month = '0'+str(i+1)
-        month = month[-2:]
+    #     # sets the month part of the file_name string
+    #     month = '0'+str(i+1)
+    #     month = month[-2:]
 
-        # csv file_name
-        file_name = f"{service}_tripdata_{year}-{month}.csv.gz"
+    # csv file_name
+    file_name = f"{service}_tripdata_{year_month}.csv.gz"
 
-        # download it using requests via a pandas df
-        request_url = f"{init_url}{service}/{file_name}"
-        r = requests.get(request_url)
-        open(file_name, 'wb').write(r.content)
-        print(f"Local: {file_name}")
+    # download it using requests via a pandas df
+    request_url = f"{init_url}{service}/{file_name}"
+    r = requests.get(request_url)
+    open(file_name, 'wb').write(r.content)
+    print(f"Local: {file_name}")
 
-        # read it back into a parquet file
-        df = pd.read_csv(file_name, compression='gzip')
-        file_name = file_name.replace('.csv.gz', '.parquet')
-        df.to_parquet(file_name, engine='pyarrow')
-        print(f"Parquet: {file_name}")
+    # read it back into a parquet file
+    df = pd.read_csv(file_name, compression='gzip')
+    
+    if service == 'yellow':
+        df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
+        df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
+    elif service == 'green':
+        df.lpep_pickup_datetime = pd.to_datetime(df.lpep_pickup_datetime)
+        df.lpep_dropoff_datetime = pd.to_datetime(df.lpep_dropoff_datetime)
+    elif service == 'fhv':
+        df = transform_fhv(df)
+    
+    file_name = file_name.replace('.csv.gz', '.parquet')
+    df.to_parquet(file_name, engine='pyarrow')
+    print(f"Parquet: {file_name}")
 
-        # upload it to gcs 
-        upload_to_gcs(BUCKET, f"{service}/{file_name}", file_name)
-        print(f"GCS: {service}/{file_name}")
+    # upload it to gcs 
+    upload_to_gcs(BUCKET, f"{service}/{file_name}", file_name)
+    print(f"GCS: {service}/{file_name}")
+
 
 # web_to_gcs('2019', 'green')
 # web_to_gcs('2020', 'green')

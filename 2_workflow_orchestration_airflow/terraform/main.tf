@@ -18,7 +18,7 @@ module "week3_homework" {
 module "week4_prep" {
   source = "./week4_prep"
 
-  BQ_DATASET              = var.BQ_DATASET
-  FHV_EXTERNAL_TABLE_NAME = var.FHV_EXTERNAL_TABLE_NAME
-  FHV_GCS_OBJECTS         = var.FHV_GCS_OBJECTS
+  # BQ_DATASET              = var.BQ_DATASET
+  # FHV_EXTERNAL_TABLE_NAME = var.FHV_EXTERNAL_TABLE_NAME
+  # FHV_GCS_OBJECTS         = var.FHV_GCS_OBJECTS
 }
