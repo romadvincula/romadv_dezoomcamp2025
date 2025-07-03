@@ -6,6 +6,10 @@ The env variables values myproject and my_nyc_tripdata take precedence over dtc_
 
 https://docs.getdbt.com/docs/build/environment-variables
 
+Correct Answer: select * from myproject.raw_nyc_tripdata.ext_green_taxi
+
+DBT_BIGQUERY_SOURCE_DATASET was never created as an environment variable.
+
 
 
 Question 2: dbt Variables & Dynamic Models
