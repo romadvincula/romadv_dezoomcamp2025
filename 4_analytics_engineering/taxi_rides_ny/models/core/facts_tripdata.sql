@@ -1,6 +1,7 @@
 {{
     config(
-        materialized='table'
+        materialized='table',
+        schema=resolve_schema_for('core')
     )
 }}
 
@@ -34,6 +35,12 @@ select trips_unioned.tripid,
     dropoff_zone.borough as dropoff_borough, 
     dropoff_zone.zone as dropoff_zone,  
     trips_unioned.pickup_datetime, 
+    -- date columns
+    EXTRACT(YEAR FROM trips_unioned.pickup_datetime) as pickup_year,
+    EXTRACT(QUARTER FROM trips_unioned.pickup_datetime) as pickup_quarter,
+    CONCAT(EXTRACT(YEAR FROM trips_unioned.pickup_datetime), '/Q', EXTRACT(QUARTER FROM pickup_datetime)) as pickup_year_qtr,
+    EXTRACT(MONTH FROM trips_unioned.pickup_datetime) as pickup_month,
+    concat( extract( year from date_sub( date(pickup_datetime), interval 1 year) ), '/Q', extract( quarter from pickup_datetime) ) as previous_pickup_year_qtr,
     trips_unioned.dropoff_datetime, 
     trips_unioned.store_and_fwd_flag, 
     trips_unioned.passenger_count, 

@@ -1,6 +1,7 @@
 {{
     config(
-        materialized='view'
+        materialized='view',
+        schema=resolve_schema_for('stg')
     )
 }}
 
@@ -49,6 +50,6 @@ where rn = 1
 -- dbt build --select <model_name> --vars '{'is_test_run': 'false'}'
 {% if var('is_test_run', default=true) %}
 
-  limit 100
+  limit {{ env_var('DBT_STG_ROW_LIMITER', '100') }}
 
 {% endif %}

@@ -1,0 +1,56 @@
+Question 1: Understanding dbt model resolution
+
+Answer: select * from myproject.my_nyc_tripdata.ext_green_taxi
+
+The env variables values myproject and my_nyc_tripdata take precedence over dtc_zoomcamp_20205 and raw_nyc_tripdata because env variables defined using env_var macro and their default values have the lowest precedence.
+
+https://docs.getdbt.com/docs/build/environment-variables
+
+
+
+Question 2: dbt Variables & Dynamic Models
+
+Answer: Update the WHERE clause to pickup_datetime >= CURRENT_DATE - INTERVAL '{{ var("days_back", env_var("DAYS_BACK", "30")) }}' DAY
+
+The variable days_back would depend on the DAYS_BACK env variable which by default is set to 30. DAYS_BACK could then be overridden by supplying a command line argument for days_back.
+
+https://stackoverflow.com/questions/72956095/dbt-environment-variables-and-running-dbt
+
+
+
+Question 3: dbt Data Lineage and Execution
+
+Answer: dbt run --select models/staging/+
+
+This would only run the models inside the staging folder, fct_taxi_monthly_zone_revenue is not included because it is in the core folder.
+
+
+
+Question 4: dbt Macros and Jinja
+
+Answer:
+	• Setting a value for DBT_BIGQUERY_TARGET_DATASET env var is mandatory, or it'll fail to compile
+	• When using core, it materializes in the dataset defined in DBT_BIGQUERY_TARGET_DATASET
+	• When using stg, it materializes in the dataset defined in DBT_BIGQUERY_STAGING_DATASET, or defaults to DBT_BIGQUERY_TARGET_DATASET
+	• When using staging, it materializes in the dataset defined in DBT_BIGQUERY_STAGING_DATASET, or defaults to DBT_BIGQUERY_TARGET_DATASET
+
+
+
+Question 5: Taxi Quarterly Revenue Growth
+
+Answer: green: {best: 2020/Q1, worst: 2020/Q2}, yellow: {best: 2020/Q1, worst: 2020/Q2}
+
+
+
+Question 6: P97/P95/P90 Taxi Monthly Fare
+
+select * from `dbt_cad_serving.fct_taxi_trips_monthly_fare_p95`
+where pickup_year = 2020 and pickup_month = 4
+
+Answer: green: {p97: 55.0, p95: 45.0, p90: 26.5}, yellow: {p97: 31.5, p95: 25.5, p90: 19.0}
+
+
+
+Question 7: Top #Nth longest P90 travel time Location for FHV
+
+Answer: LaGuardia Airport, Chinatown, Garment District

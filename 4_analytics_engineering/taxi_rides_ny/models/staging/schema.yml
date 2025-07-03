@@ -2,12 +2,13 @@ version: 2
 
 sources:
   - name: staging
-    database: dtc-de-course-462612
-    schema: trips_data_all
+    database: "{{ env_var('DBT_DATABASE', 'my_database') }}"
+    schema: "{{ env_var('DBT_SCHEMA', 'my_schema') }}"
 
     tables:
       - name: external_green_nytaxi
       - name: external_yellow_nytaxi
+      - name: external_fhv_nytaxi
 
 models:
   - name: stg_green_tripdata

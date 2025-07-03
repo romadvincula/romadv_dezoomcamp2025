@@ -1,4 +1,4 @@
-{{ config(materialized='table') }}
+{{ config(materialized='table', schema=resolve_schema_for('core')) }}
 
 with trips_data as (
     select * from {{ ref('facts_tripdata') }}

@@ -53,3 +53,135 @@ GROUP BY payment_type
 SELECT payment_type, COUNT(*)
 FROM `trips_data_all.external_green_nytaxi`
 GROUP BY payment_type
+
+
+select service_type
+, pickup_year
+, pickup_month
+, sum(fare_amount) total_fare
+, rank() over (partition by service_type, pickup_year order by sum(fare_amount) desc) as fare_rank
+, percent_rank() over (partition by service_type, pickup_year order by sum(fare_amount) desc) as fare_percentile_rank
+from `dbt_cad_serving.facts_tripdata` 
+where fare_amount > 0
+and trip_distance > 0
+and payment_type_description in ('Cash', 'Credit card')
+group by service_type
+, pickup_year
+, pickup_month
+limit 100;
+
+
+-- Compute the continous percentile of fare_amount partitioning by service_type, year and and month
+with filtered as (
+select service_type
+, pickup_year
+, pickup_month
+, fare_amount
+from `dbt_cad_serving.facts_tripdata` 
+where fare_amount > 0
+and trip_distance > 0
+and payment_type_description in ('Cash', 'Credit card')
+-- and pickup_year = 2019 and pickup_month = 1
+-- LIMIT 100
+)
+select distinct service_type
+, pickup_year
+, pickup_month
+, percentile_cont(fare_amount, 0.97) over(partition by service_type, pickup_year, pickup_month) as p97
+, percentile_cont(fare_amount, 0.95) over(partition by service_type, pickup_year, pickup_month) as p95
+, percentile_cont(fare_amount, 0.90) over(partition by service_type, pickup_year, pickup_month) as p90
+from filtered as f
+order by service_type
+, pickup_year desc
+, pickup_month desc
+;
+
+
+select * from `dbt_cad_serving.fct_taxi_trips_monthly_fare_p95`
+where pickup_year = 2020 and pickup_month = 4
+
+
+-- Compute the continous p90 of trip_duration partitioning by year, month, pickup_location_id, and dropoff_location_id
+select pickup_year
+, pickup_month
+, pickup_locationid
+, pickup_borough
+, dropoff_locationid
+, dropoff_borough
+, pickup_datetime
+, dropoff_datetime
+, date_diff(dropoff_datetime, pickup_datetime, day) diff_date
+, timestamp_diff(dropoff_datetime, pickup_datetime, second) trip_duration
+from `dbt_cad_serving.dim_fhv_trips`
+limit 100;
+
+
+with trip_duration as (
+  select pickup_year
+  , pickup_month
+  , pickup_locationid
+  , pickup_borough
+  , dropoff_locationid
+  , dropoff_borough
+  , pickup_datetime
+  , dropoff_datetime
+  , timestamp_diff(dropoff_datetime, pickup_datetime, second) trip_duration
+  from `dbt_cad_serving.dim_fhv_trips`
+)
+select distinct pickup_year
+  , pickup_month
+  -- , pickup_locationid
+  , pickup_borough
+  -- , dropoff_locationid
+  , dropoff_borough
+  -- , pickup_datetime
+  -- , dropoff_datetime
+  , percentile_cont(trip_duration, 0.90) over(partition by pickup_year, pickup_month, pickup_borough, dropoff_borough) as trip_duration_p90
+from trip_duration as td
+order by pickup_year desc, pickup_month desc, pickup_borough, dropoff_borough
+limit 100;
+
+
+
+--For the Trips that respectively started from Newark Airport, SoHo, and Yorkville East, in November 2019, what are dropoff_zones with the 2nd longest p90 trip_duration ?
+select tt.pickup_year
+, tt.pickup_month
+, pu.zone as pickup_zone
+, dof.zone as dropoff_zone
+, tt.trip_duration_p90
+from `dbt_cad_serving.fct_fhv_monthly_zone_traveltime_p90` as tt
+inner join `dbt_cad_serving.dim_zones` as pu
+on tt.pickup_locationid = pu.locationid
+inner join `dbt_cad_serving.dim_zones` as dof
+on tt.dropoff_locationid = dof.locationid
+where lower(pu.zone) in ('newark airport', 'soho', 'yorkville east')
+and tt.pickup_year = 2019
+and tt.pickup_month = 11
+order by pu.zone, tt.trip_duration_p90 desc
+;
+
+with ranked as (
+select tt.pickup_year
+, tt.pickup_month
+, pu.zone as pickup_zone
+, dof.zone as dropoff_zone
+, tt.trip_duration_p90
+, rank() over (partition by pu.zone order by tt.trip_duration_p90 desc) as rank_longest_duration
+from `dbt_cad_serving.fct_fhv_monthly_zone_traveltime_p90` as tt
+inner join `dbt_cad_serving.dim_zones` as pu
+on tt.pickup_locationid = pu.locationid
+inner join `dbt_cad_serving.dim_zones` as dof
+on tt.dropoff_locationid = dof.locationid
+where lower(pu.zone) in ('newark airport', 'soho', 'yorkville east')
+and tt.pickup_year = 2019
+and tt.pickup_month = 11
+)
+select pickup_year
+, pickup_month
+, pickup_zone
+, dropoff_zone
+, trip_duration_p90
+from ranked as r
+where rank_longest_duration = 2
+;
+-- For Yorkville East: Garment District, For SoHo: Chinatown, For Newark Airport: LaGuardia Airport
