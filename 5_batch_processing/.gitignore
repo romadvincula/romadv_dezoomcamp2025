@@ -1,0 +1,13 @@
+*.txt
+
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+*.csv
+*.parquet
+
+fhvhv/
+
+data/
+
+artifacts/
