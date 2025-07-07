@@ -28,12 +28,12 @@ spark.conf.set('temporaryGcsBucket', 'dataproc-temp-us-central1-503117876407-sys
 df_green = spark.read \
     .option("header","true") \
     .option("recursiveFileLookup","true") \
-    .parquet(input_green)  #'data/pq/green'
+    .parquet(input_green)
 
 df_yellow = spark.read \
     .option("header","true") \
     .option("recursiveFileLookup","true") \
-    .parquet(input_yellow)  #'data/pq/yellow'
+    .parquet(input_yellow)
 
 # rename pickup and dropoff datetime columns
 df_green = df_green \
@@ -103,6 +103,10 @@ GROUP BY
     1, 2, 3
 """)
 
+# df_result.write.format('bigquery') \
+#     .option('table', output) \
+#     .save()
+
 df_result.write.format('bigquery') \
-    .option('table', output) \
-    .save()
+    .mode('overwrite') \
+    .save(output)
