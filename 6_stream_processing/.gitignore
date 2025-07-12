@@ -1,1 +1,6 @@
 notes.txt
+# VSCode
+.vscode
+*.code-workspace
+
+__pycache__
